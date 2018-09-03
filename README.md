@@ -1,4 +1,11 @@
 # Curvalyser_CLI
 
-The original Curvalyser and Paramalyser developed by Jan Opfer, j [at] opfer [dot] net
-Running with the command line (CLI).
+The original Curvalyser and Paramalyser developed by Jan Opfer. Contact: j [at] opfer [dot] net
+
+Run as a command line interface (CLI) program.
+
+## Verison
+* Curvalyser v1.10 Paramalyser 1.10
+    * the final release from the original developer Jan Opfer.
+
+## Miscellaneous
