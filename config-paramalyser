@@ -1,0 +1,125 @@
+﻿# *** data settings ***
+statistics_dir   = 'statistics'                       # relative output directory (relative to fixed_output_dir or base_output_dir from Curvalyser config)
+fixed_input_dir  = 'C:\Users\Steffie\Desktop\Curvalyser_aktuelle Auswertung\output/'       # absolute input directory;  default: base_output_dir from Curvalyser config
+fixed_output_dir = fixed_input_dir + '/' + statistics_dir # absolute output directory; default: input directory > statistics_dir
+#experiment_types = ['blocked_PRP_3s','blocked_PRP_1s','blocked_PRP_noco_3s','blocked_PRP_noco_1s','blocked_PRP_cyto_3s','blocked_PRP_cyto_1s','blocked_PRP_PEG_3s','blocked_PRP_PEG_1s']                         # range and order of experiment types to be analysed; see below
+analyse_all = 1                                            # 0 = analyse only experiment types specified by experiment_types (in that order), 1 = analyse all experiment types (order specified by experiment_types)
+ignore_ids = []
+
+#TL CMA Cantilever  'CBF016','CBF017','CBF018','CBF019','CBF020','CBF021','CBF022','CBM018','CBM019','CBM020','CBM021','CBM022','CBM023'           
+                                                           # ignore experiments matching the specified IDs
+curves_range_start = None                                  # first curve to include (counting starts with 1; negative value: count from the end); can be overwritten by paramalyser_curves_range_start in Curvalyser config
+curves_range_stop  = None                                  # last  curve to include (counting starts with 1; negative value: count from the end); can be overwritten by paramalyser_curves_range_stop  in Curvalyser config
+curves_range_step  = 1                              	   # step size (negative value: go backwards);  can be overwritten by paramalyser_curves_range_step in Curvalyser config
+autosplit_size    = 0                                      # split curves into chunks of size autosplit_size
+autosplit_overlap = 0                                      # overlap of the autosplit chunks
+steps_ctr_averaging = 1								  	   # 0=consider all curves to calculate the average number of steps, 1=consider only adhesive curves; default
+
+# *** tasks and plots ***
+
+#tasks to be performed; possible tasks: 'data_cum', 'histos_cum', 'scatter_cum', 'boxplots', 'boxplots_cum', 'averages', 'averages_cum', 'averages_boxplots', 'medians', 'medians_cum', 'medians_boxplots', 'modals', 'modals_cum', 'modal_boxplots', 'other', 'tests', 'custom','data', 'data_cum', 'histos', 'histos_cum', 'CDF', 'CDF_cum', 'CDF_data_cum', 'scatter', 'scatter_cum', 'boxplots', 'boxplots_cum', 'averages', 'averages_cum', 'averages_boxplots', 'medians', 'medians_cum', 'medians_boxplots', 'modals', 'modals_cum', 'modal_boxplots', 'other', 'tests', 'custom', 'averages_data', 'medians_data', 'modals_data'
+tasks =  ['data_cum', 'histos_cum', 'scatter_cum', 'boxplots', 'boxplots_cum', 'averages_cum', 'averages_boxplots', 'data_cum', 'histos', 'histos_cum', 'CDF', 'CDF_cum', 'scatter', 'scatter_cum']
+plot_params = ['force', 'peak_force','peak_extension', 'height', 'work', 'steps_ctr','slope_l', 'adhesion_rate', 'steps_ctr_avg', 'steps_ctr_stderr', 'plateau_slope_l', 'plateau_slope_r', 'extension',]
+#parameters to be plotted; possible parameters: 'steps_ctr', 'peak_extension', 'peak_force', 'indent_force', 'work', 'bl_itcpt', 'bl_slope', 'bl_crvtr', 'contact_slope_l', 'contact_slope_r', 'contact_slope_r_normed', 'noise_sigma', 'extension', 'force', 'height', 'avg_slope', max_slope', 'plateau_slope_l', 'plateau_slope_r', 'stiffness', 'adhesion_rate', 'steps_ctr_avg', 'steps_ctr_stderr'
+
+plot_steps = ['all', 'first', 'last']
+#to be performed; possible steps: ['all', 'single', 'first', 'last']           
+# create extra plots/figures for certain curves (all: all curves, single: only curves with exact one step, first: only first step, last: only last step)
+#custom_script = 'custom_plots.py'                          # custom script to be executed
+cumulation_mode = 0
+
+# *** filters ***
+step_filter_limits = {                                  # filter steps only (applied before curve_filter_limits)
+  'steps_ctr':       None,								# number of steps
+  'peak_extension':  None,								# extension of the peak force
+  'peak_force':      None,								# peak force
+  'indent_force':    None,								# indentaion force
+  'work':            None,								# work (area between the baseline and the retrace curve)
+  'bl_itcpt':        None,								# interception (Abfragen) of the baseline
+  'bl_slope':        None,								# slope of the baseline
+  'bl_crvtr':        None,								# curvature of the baseline (in case of a quadratic fit)
+  'noise_sigma':     None,								# estimated standard deviation of the noise
+  'extension':       None,#(3,None), # wasNone,			# extension of the left (lower) edge of the step
+  'force':           None,								# force at the left (lower) edge of the step
+  'height':          None, #was (10, None)				# relative height of the step (difference of the forces at the upper and lower edge)
+  'avg_slope':       None,								# average value of the indicator
+  'max_slope':       None,#(250, None),#WAS 250			# maximum value of the indicator
+  'slope_l': 		 None,								# fitted slope on the left of the step
+  'slope_r': 		 None,								# fitted slope on the right of the step
+  'stiffness':       None,								# height / extension
+}
+curve_filter_limits = {                                    # filter curves AND steps (applied after step_filter_limits)
+  'steps_ctr':       (0,None),# (1,None),  # !!!!!!!!!!!!
+  'peak_extension':  None,
+  'peak_force':      None,
+  'indent_force':    None,
+  'work':            None,
+  'noise_sigma':     None,
+  'bl_itcpt':        None,
+  'bl_slope':        None,
+  'bl_crvtr':        None,
+  'indent_slope_l':  None,
+  'indent_slope_r':  None,
+  'extension':       None,
+}
+
+# *** plotting ***
+plot_ranges = {                                            # default plot ranges
+  'steps_ctr':            (0, 30),# was 3
+  'peak_extension':       (0, 50),# was 3
+  'peak_force':           (-500,500), #(0, 400), # was 120 bzw 500
+  'indent_force':         (-100,1000),#None, #was500
+  'work':                 (-100, 3000), #was None, #(0, 2000), #(-10, 3000),
+  'bl_itcpt':              None,
+  'bl_slope':              None, #(-6,6),
+  'bl_crvtr':              None,
+  'indent_slope_l':        None,#(-5000,0),
+  'indent_slope_r':        None, #(-400, 300),
+  'indent_slope_r_normed': None, #(-400, 300),
+  'noise_sigma':           None, #(0,10), #(3, 10),
+  'adhesion_rate':        (0,100), #None,
+  'extension':            (0, 50), #None, #(0,5), #(0, 5), # was 3.5
+  'force':                (0, 500), #None, #(-10,  500), #(-10, 500), # was 120
+  'height':               (0, 200), #(0, 200),          
+  'avg_slope':              None,
+  'max_slope':              None,
+  'slope_l':       (-2000,1000),#None,
+  'slope_r':       None,
+  'stiffness':             (-500, 500), #(0, 300)
+  
+  
+  
+  
+  
+}
+histogram_ranges   = plot_ranges                           # plot ranges for histograms
+boxplot_ranges     = plot_ranges                           # plot ranges for boxplots
+scatterplot_ranges = plot_ranges                           # plot ranges for scatterplots
+#experiment_type_labels =                            # custom labels for experiment types (default: auto)
+#experiment_type_colors =                            # custom colors for experiment types (default: auto)
+#pl.rcParams['font.size']       = 15                       # plot properties
+pl.rcParams['legend.fontsize'] = 'small'
+pl.rcParams['text.fontsize']   = 15
+pl.rcParams['axes.titlesize']  = 15
+pl.rcParams['axes.labelsize']  = 15
+pl.rcParams['xtick.labelsize'] = 15
+pl.rcParams['ytick.labelsize'] = 15
+plot_size               = None                             # default plot size
+plot_size_histogram     = None                             # plot size for histograms
+plot_size_CDF           = None                             # plot size for CDFs
+plot_size_scatter       = None                             # plot size for scatterplots
+plot_size_boxplot       = None                             # plot size for boxplots
+plot_size_errorbar      = None #26.08.16 --> (2000, 1500)            # plot size for errorbar plots
+plot_size_errorbar_cum  = None                             # plot size for cumulated errorbar plots
+plot_size_errorbar_corr = None                             # plot size for correlated errorbar plots
+histogram_bins = 50                                        # number of histogram bins
+histogram_norm_curves = 1                                  # 0 = no normalization, 1 = normalize to one, 2 = normalize to e number of steps, 3 = normalize to adhesion rate
+histogram_norm_steps  = 1                                  # 0 = no normalization, 1 = normalize to one, 2 = normalize to average number of steps, 3 = normalize to adhesion rate
+histogram_ylim = (0, 1) #26.08.16 --> 0.1                  # vertical range of histograms
+
+# *** miscellaneous settings ***
+output_format = 'igor'                                     # output format for data files (None = default text format, 'igor' = Igor format)
+curvalyser_config = {                                      # overwrites Curvalyser config
+  #'base_output_dir': 'output'
+}
+indentation_curve = 1									# indentation_curve = 1, the trace curve is used, otherwise the retrace curve.

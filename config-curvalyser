@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+
+# *** data settings ***
+#file_pattern = '../Daten/001/*14.33.38.out'	# file mask for force curves (to select specific files only)
+#file_range = '10:-10:2'			# range of files (format: "start:stop:step,start:stop:step,..."; counting starts with 1; negative value: count from the end)
+input_dir = 'C:\Users\Steffie\Desktop\Curvalyser\ForceCurves'				# directory containing force curves; remove unwanted files
+file_ext = '*.txt'				# file extension of force curves
+file_format = 'text'				# file format of force curves
+columns = (3,1)
+column_delimiter = ' '
+base_output_dir = 'C:\Users\Steffie\Desktop\Curvalyser\output'			# base output directory; existing files will be overwritten
+nominal_values = {				# first field: nominal value; second field: maximum deviation
+#    'sensitivity': (60e-9, 25e-9),
+#    'pauseAtEnd': (.1, 0),
+#    'retrace_velocity': (3.4e-6, 0.01e-6)
+}
+assert_nominal_values = 0				# 0 = warn only, 1 = exclude force curves conflicting with the nominal values
+multiplier_x = 1e6						# multiplier for extension
+multiplier_y = 1e12						# multiplier for force
+unit_x = 'um'							# unit of extension (after multiplication)
+unit_y = 'pN'							# unit of force (after multiplication)
+
+# *** baseline ***						# Itteratives Verfahren, beginnt am Ende der Retrace Kurve: 
+fit_baseline = 1						# 0 = no fit, 1 = linear fit, 2 = quadratic fit
+baseline_fit_min_width = 0.005	# minimum baseline fit length for a curve to be analysed
+#baseline_return_to_local_min = 0		# 0=the baseline fit is performed up to the point, where it is terminated; 1=the baseline fit is performed up to the last local minimum of the RSS after termination; Endpunkt eines Fit-Intervalles=letzes lokales Minimum, wenn baseline_return_to_local_min = 1
+baseline_max_rel_local_RSS = 4 # 26.06.16 --> 4.0		# Threshold: relative sensitivity for the termination of the baseline fit. D.h. Baseline Fit stopt sobald die Summe der Quadrate (RSS) größer als der Threshold wird, da zu große Schwankungen!
+
+# *** denoising ***
+denoising_method = 'gauss'				#'renoir', 'gauss', 'savgol'
+denoising_param_fctn = "lambda noise_level, rows, meta: noise_level * 1.0"
+denoising_param = eval(denoising_param_fctn)	# strength of denoising filter (fixed value or user-defined function)
+#denoising_param2 = 500
+
+# *** step detection *** #step positions are marked by vertical yellow lines in the force curve and indicator diagrams and the effective threshold by a black horizontal line in the indicator diagram
+						 #step heights are indicated by red and green crosses in the force curve diagrams 
+MSF_sigma_fctn  = "lambda noise_level: noise_level * 1.0"
+MSF_sigma       = eval(MSF_sigma_fctn)		# Gauss smoothing of the retrace curve
+#MSF_sigma       = 10						# Gauss smoothing of the retrace curve. Gaussian kernel of standard deviation MSF_sigma. Choose higher values if too many local maxima appear and lower values if neighbouring steps are not detected separately.
+MSF_window      = 1							# width of the moving fit window. 1=if the steps are narrow or sharp; a higher value=if the steps are smooth (try e.g. 10 or 100). Higher values increase detection sensitivity for low, wide steps and lower values increase lateral resolution (important for the detection of hardly separated, narrow steps);
+MSF_mode        = 0                         # method to calculate the indicator; 0 = height, 1 = RSS_n / RSS_p, 2 = height / RSS_p, 3 = height * RSS_n, 4 = height * RSS_n / RSS_p
+indicator_threshold          = 40			# Steffie: hier ändert sich nichts!!! Absolute Threshold: step detection sensitivity (absolute value)
+indicator_relative_threshold = 8			# Steffie: hier Sensiivität einstellen!!! was 5 Relativer Threshold: step detection sensitivity (relative to noise level after denoising)
+step_confinement_lt = .8					# threshold for the gap between step and left fit window relative to indicator
+step_confinement_rt = .8					# threshold for the gap between step and right fit window relative to indicator
+step_fit_min_len = 100						# minimum size of the window for step fits: Linear fits of the flanks left and right of the detected steps are performed if the distance to the next step (or to the beginning/end of the force curve) is at least step_fit_min_len data points.
+step_fit_max_len = 2000						# maximum size of the window for step fits
+step_min_height= 15
+#step_min_width=
+#step_max_width=10
+#step_min_slope=250
+
+# *** contact point ***
+find_contact_pos = 1				# 0=do not detect the contact point; 1=detect the contact point
+max_contact_pos = 2.0				# maximum distance of the contact point from the beginning of the curve
+min_contact_force = 0.0				# minimum force at the contact point
+
+# *** fitting ***
+indentation_fit = None				# None=do not perform fit;0 = fit indentation slopes at contact point, > 0: fit slopes at specified indentation force
+indentation_curve = 0				# 0 = use denoised retrace curve, 1 = use trace curve (not denoised)
+indentation_lt_fit_width = 0.01		# width of the contact point fit to the left
+indentation_rt_fit_width = 0.01		# width of the contact point fit to the right
+indentation_fit_avg_window = 3		# half size of the averaging window for finding a specified indentation force
+step_fit_width = 0.010				# fit length for step slopes
+
+# *** plotting ***
+plot_force_curves = 1				# plot force curves; 0 = no, 1 = yes
+plot_indicators   = 0				# plot indicators;   0 = no, 1 = yes
+show_plots = 0					# show plots in GUI (on Windows only working with single force curves -> set file_pattern)
+plot_xmin = -0.5				# minimum extension; default: autoscale
+plot_xmax = None				# maximum extension; default: autoscale
+plot_ymin = -200				# minimum force; default: autoscale
+plot_ymax = 200					# maximum force; default: autoscale
+plot_size_force_curves     = 1280, 1024		# plot size (pixels)
+plot_size_indicator_curves = 1280,  600		# plot size (pixels)
+											#fit_drawing_width = step_fit_width	width of the step slope fits
+
+# *** miscellaneous settings ***
+verbose = 0					# level of verbosity (0-2)

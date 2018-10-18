@@ -5,8 +5,8 @@ The original Curvalyser and Paramalyser developed by Jan Opfer. Contact: j [at] 
 Run as a command line interface (CLI) program.
 
 ## Instructions
-For Setup and "How to use the Curvalyser and Paramalyser" 
-see the "manual_v1.10_Curvalyser_and_Paramalyser.pdf" file.
+For setup and "how to use the Curvalyser and Paramalyser" 
+see the "manual_v1.10_Curvalyser_and_Paramalyser.pdf".
 
 ## Version
 * Curvalyser v1.10 Paramalyser 1.10
